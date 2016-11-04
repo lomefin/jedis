@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+    <meta property="og:description" content="JEDIS - Redis-like javascript library." />
+    <meta property="og:title" content="JEDIS" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-barstyle" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon-152x152.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="shortcut icon" sizes="196x196" href="icons/favicon-196x196.png">
+    <meta name="theme-color" content="#373a3c" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tag above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Jedis!</title>
+  </head>
+  <body>
+    
+    <div class="container-fluid">
+      
+      <div class="row">
+        <main class="col-xs-12">Open up your console!</main>
+      </div>
+    </div>
+
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start`.
+      To create a production bundle, use `npm run build`.
+    -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
+    <script src="lib/jedis.js" ></script>
+    <script>
+      var checkJedis = function(){
+
+        var jedis = new Jedis("testJedi");
+        window.jedis = jedis;
+        jedis.set("HELLO", "HELLO");
+        jedis.set("colonized:key","Is full of colons");
+        jedis.setex("EXPIRING", 2,  "EXPIRE IN 2 seconds");
+        jedis.ttl("EXPIRING");
+        console.debug(jedis.get("HELLO"));
+        console.debug(jedis.get("EXPIRING"));
+
+        var checkExpiring = () => {
+          console.debug(jedis.get("EXPIRING"));
+        };
+
+        setTimeout(checkExpiring, 1500);
+        setTimeout(checkExpiring, 3500);
+
+        jedis._saveLSKey("keys");
+
+      };
+      $(function(){
+        setTimeout(checkJedis, 100);
+      });
+    </script>
+  </body>
+</html>
