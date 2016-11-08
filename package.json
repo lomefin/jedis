@@ -9,7 +9,8 @@
   "description": "A Redis-like library for javascript browser clients with persistence.",
   "main": "index.html",
   "dependencies": {
-    "babel-cli": "^6.18.0"
+    "babel-cli": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.18.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

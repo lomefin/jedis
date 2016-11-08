@@ -2,19 +2,19 @@
 
 JEDIS
 
-
+Started in 2016 by Leonardo Luarte (@lomefin)
 
 ****/
 
 class Jedis {
-  
+
   constructor(prefix = "jedis"){
     console.debug("Jedis starting! May the force be with us all.");
     this.prefix = prefix;
     this.ls = window.localStorage;
-    this.keys = this._loadLSKey('keys');
-    this.lists = this._loadLSKey('lists');
-    this.sets = this._loadLSKey('sets');
+    this._loadLSKey('keys');
+    this._loadLSKey('lists');
+    this._loadLSKey('sets');
   }
 
   set(key, value) {
@@ -29,7 +29,7 @@ class Jedis {
     if(!Number.isInteger(ttl)){
       throw new TypeError("TTL is not Integer", typeof ttl);
     }
-    
+
     return this.psetex(key, ttl * 1000, value);
   }
 
@@ -71,6 +71,16 @@ class Jedis {
     return 1;
   }
 
+  flushAll(confirm = false){
+    if(!confirm){
+      console.warn("FlushAll requested.");
+    }
+    this.ls.clear();
+    this._loadLSKey('keys');
+    this._loadLSKey('lists');
+    this._loadLSKey('sets');
+  }
+
   _saveLSKey(key){
     let structure = this[key];
     let json = JSON.stringify(structure);
@@ -79,12 +89,13 @@ class Jedis {
 
   _loadLSKey(key){
     let internalKeyValue = this.ls.getItem(`${this.prefix}.${key}`);
-    if(internalKeyValue === null) { return {}; }
+    if(internalKeyValue === null) { this[key] = {}; return; }
+    var result = {}
     try{
-      return JSON.parse(internalKeyValue);
+      result = JSON.parse(internalKeyValue);
     }catch(se){
       console.error("Failed to recover database structure due to SyntaxError on parse process.", se);
     }
-    return {};
+    this[key] = result;
   }
 }
