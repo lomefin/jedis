@@ -40,3 +40,17 @@ This project was meant to help us in the development of a prototype for www.arri
 Depending on the needs of the project we will expand the code to cover other areas.
 
 We still don't know the best way to test out the app.
+
+Available Commands
+---------------------
+FLUSHALL
+
+GET
+
+SET
+
+DEL
+
+_SAVELSKEY
+
+_LOADLSKEY

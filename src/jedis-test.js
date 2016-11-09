@@ -13,6 +13,17 @@ class NewConsole{
     this.body = oldBody;
   }
 
+  footer(msg){
+    var footer = document.getElementById('jedis-footer');
+    var container = document.createElement("h3");
+    container.className = "d-inline mr-1";
+    var oldBody = this.body;
+    footer.appendChild(container);
+    this.body = container;
+    this.render(msg,"span","tag tag-default");
+    this.body = oldBody;
+  }
+
   render(obj, tag, textClass = "text"){
     let holder = document.createElement(tag);
     let text = document.createTextNode(obj);
@@ -56,6 +67,7 @@ class JedisTest{
     this.jedis = new Jedis("jedisTest");
     this.console = new NewConsole();
     this.testResults = [];
+    this.testResultsByName = {};
   }
 
   up() {
@@ -83,12 +95,13 @@ class JedisTest{
     this.console.groupEnd();
     downOverride !== null ? downOverride() : this.down();
     this.testResults.push(returnValue);
+    this.testResultsByName[name] = returnValue;
     return returnValue;
   }
 
   testGroupFlushAll = () => {
     this.console.group("FLUSHALL");
-    this.JSTest("flushes all data", ()=>{
+    this.JSTest("FLUSHALL", ()=>{
       this.jedis.set("KEY-1", 1);
       this.jedis.set("KEY-2", 2);
       this.jedis.flushAll();
@@ -194,9 +207,9 @@ class JedisTest{
 
     this.testGroupSets();
 
-    this.afterMath();
-
     this.testGroupLocalStorage();
+
+    this.afterMath();
   }
 
   afterMath = () => {
@@ -208,7 +221,14 @@ class JedisTest{
     }
 
     this.console.header(`Tests: ${totalPasses + totalFails}. Passed: ${totalPasses}, Failed: ${totalFails}.`);
-
+    console.log("TRBN", this.testResultsByName);
+    for(var r in this.testResultsByName){
+      console.log(r);
+      var val = this.testResultsByName[r];
+      if(val){
+        this.console.footer(r);
+      }
+    }
   }
 
 };
