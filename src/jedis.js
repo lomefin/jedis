@@ -99,3 +99,5 @@ class Jedis {
     this[key] = result;
   }
 }
+
+// export default Jedis;

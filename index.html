@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:300" rel="stylesheet">
     <meta property="og:description" content="JEDIS - Redis-like javascript library." />
     <meta property="og:title" content="JEDIS" />
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,6 +14,51 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" sizes="196x196" href="icons/favicon-196x196.png">
     <meta name="theme-color" content="#373a3c" />
+
+    <style media="screen" type="text/css">
+
+    body {
+      font-family: 'Titillium Web', 'Lato', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    }
+    h1, h2, h3, p {
+      font-family: 'Titillium Web', 'Lato', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    }
+    section h2 {
+      font-size: 2rem;
+      border-bottom: 1px solid black;
+    }
+    section section h2 {
+      font-size: 1.75rem;
+      border-bottom: none;
+    }
+    section section section h2{
+      font-size: 1.5rem;
+    }
+
+    section {
+      padding-top: 1.5rem!important;
+      padding-bottom: 0.75rem!important;
+    }
+
+    section section {
+      padding-top: 0rem!important;
+      padding-bottom: 0.5rem!important;
+    }
+
+    section section section {
+      padding-top: 0rem!important;
+      padding-bottom: 0.25rem!important;
+    }
+
+    section p {
+      margin-bottom: 0.25rem;
+    }
+
+    #jedis-header p {
+      margin: 1rem 0;
+    }
+
+    </style>
     <!--
       Notice the use of %PUBLIC_URL% in the tag above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -26,10 +72,18 @@
   </head>
   <body>
 
-    <div class="container-fluid">
-
+    <div class="container">
       <div class="row">
-        <main class="col-xs-12">Open up your console!</main>
+        <div class="col-xs-12 text-xs-center">
+          <h1 class="display-2 hidden-sm-down">Jedis Test Results</h1>
+          <h1 class="hidden-md-up">Jedis Test Result</h1>
+        </div>
+      </div>
+      <div class="row">
+        <header class="col-xs-12 col-lg-8 offset-lg-2 alert-info" id="jedis-header"></header>
+      </div>
+      <div class="row">
+        <main class="col-xs-12  col-lg-8 offset-lg-2" id="jedis-output"></main>
       </div>
     </div>
 
@@ -52,8 +106,29 @@
       var checkJedis = function(){
         new JedisTest().go();
       };
+      var lastModifiedJedis = new Date();
+      var lastModifiedJedisTest = new Date();
+      var checkUpdates = function(){
+        $.ajax('lib/jedis.js',{cache: false, method: "HEAD"}).done(function(data,status,req){
+          var lastModified = req.getResponseHeader('Last-Modified');
+          var lastModifiedDate = new Date(lastModified);
+          var timeDiff = (lastModifiedDate - lastModifiedJedis);
+          if(timeDiff > 0){
+            location = location;
+          }
+        });
+        $.ajax('lib/jedis-test.js',{cache: false, method: "HEAD"}).done(function(data,status,req){
+          var lastModified = req.getResponseHeader('Last-Modified');
+          var lastModifiedDate = new Date(lastModified);
+          var timeDiff = (lastModifiedDate - lastModifiedJedisTest);
+          if(timeDiff > 0){
+            location = location;
+          }
+        });
+      }
       $(function(){
-        setTimeout(checkJedis, 1000);
+        setTimeout(checkJedis, 100);
+        setInterval(checkUpdates, 1000);
       });
     </script>
   </body>
