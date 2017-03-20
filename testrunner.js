@@ -27,7 +27,7 @@ page.open('test_context.html', function(status) {
 					jedisTest.testGroupKeys();
 					break;
 				case 'LISTS':
-						jedisTest.testGroupLists();
+					jedisTest.testGroupLists();
 					break;
 				case 'SETS':
 					jedisTest.testGroupSets();
