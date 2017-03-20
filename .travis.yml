@@ -4,4 +4,4 @@ script:
  - phantomjs testrunner.js KEYS
  - phantomjs testrunner.js LISTS
  - phantomjs testrunner.js SETS
- - phantomjs testrunner.js LOCALSTORAGE.
+ - phantomjs testrunner.js LOCALSTORAGE
