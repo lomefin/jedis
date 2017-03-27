@@ -17,7 +17,7 @@ page.onConsoleMessage = function(msg) {
 page.open('test_context.html', function(status) {
 	page.evaluate(function(test) {
 		var jedisTest = new JedisTest();
-	
+
 		try {
 			switch (test) {
 				case 'FLUSHALL':
@@ -34,11 +34,11 @@ page.open('test_context.html', function(status) {
 					break;
 				case 'LOCALSTORAGE':
 					jedisTest.testGroupLocalStorage();
-					break;	
+				break;
 			}
 		}
 		catch(err) {
-			phantom.exit(-1);
+		phantom.exit(-1);
 		}
 	}, test);
 	phantom.exit();
