@@ -15,9 +15,9 @@ page.onConsoleMessage = function(msg) {
 };
 
 page.open('test_context.html', function(status) {
-	page.evaluate(function(test) {
+	console.log('TESTING ' + test);
+	var out = page.evaluate(function(test) {
 		var jedisTest = new JedisTest();
-
 		try {
 			switch (test) {
 				case 'FLUSHALL':
@@ -38,8 +38,17 @@ page.open('test_context.html', function(status) {
 			}
 		}
 		catch(err) {
-			phantom.exit(-1);
+			console.log('ERROR OCCURRED: ' + err);
+			return false;
 		}
+		return true;
 	}, test);
-	phantom.exit();
+	if(out){
+		console.log('TEST SUCCEEDED!');
+		phantom.exit();
+	}
+	else {
+		console.log('TEST FAILED!');
+		phantom.exit(-1);
+	}
 });

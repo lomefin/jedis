@@ -25,9 +25,9 @@ class JedisTest{
     } catch (e) {
       console.error("Error in running function.");
       console.debug(e);
-    } finally {
-			throw "Error in running function: " + e;
-    }
+			throw e;
+    } finally {}
+		
     returnValue ? console.log("PASS") : console.error("FAIL");
     console.groupEnd();
     downOverride !== null ? downOverride() : this.down();
