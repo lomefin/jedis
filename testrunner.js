@@ -38,7 +38,7 @@ page.open('test_context.html', function(status) {
 			}
 		}
 		catch(err) {
-		phantom.exit(-1);
+			phantom.exit(-1);
 		}
 	}, test);
 	phantom.exit();
