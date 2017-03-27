@@ -1,71 +1,8 @@
 // import Jedis from 'jedis';
 
-class NewConsole{
-  constructor(){
-    this.body = document.getElementById('jedis-output');
-    this.bodyStack = [this.body];
-  }
-  header(obj){
-    var header = document.getElementById('jedis-header');
-    var oldBody = this.body;
-    this.body = header;
-    this.render(obj,"p","text-info");
-    this.body = oldBody;
-  }
-
-  footer(msg){
-    var footer = document.getElementById('jedis-footer');
-    var container = document.createElement("h3");
-    container.className = "d-inline mr-1";
-    var oldBody = this.body;
-    footer.appendChild(container);
-    this.body = container;
-    this.render(msg,"span","tag tag-default");
-    this.body = oldBody;
-  }
-
-  render(obj, tag, textClass = "text"){
-    let holder = document.createElement(tag);
-    let text = document.createTextNode(obj);
-    holder.className = textClass;
-    holder.appendChild(text);
-    this.body.appendChild(holder);
-  }
-  group(msg){
-    let newBody = document.createElement("section");
-    this.bodyStack.push(newBody);
-    this.body.appendChild(newBody);
-    this.body = newBody;
-    console.group(msg);
-    this.render(msg,"h2");
-  }
-  success(msg){
-    console.log(msg);
-    this.render(msg, "p", "text-success");
-  }
-  error(msg){
-    console.error(msg);
-    this.render(msg, "p", "text-danger");
-  }
-  debug(msg){
-    console.debug(msg, "p");
-    this.render(msg, "p");
-  }
-  warn(msg){
-    console.warn(msg, "p");
-    this.render(msg, "p");
-  }
-  groupEnd(){
-    console.groupEnd();
-    this.bodyStack.pop();
-    this.body = this.bodyStack[this.bodyStack.length - 1];
-  }
-}
-
 class JedisTest{
   constructor(){
     this.jedis = new Jedis("jedisTest");
-    this.console = new NewConsole();
     this.testResults = [];
     this.testResultsByName = {};
   }
@@ -80,27 +17,27 @@ class JedisTest{
   JSTest = (name, func, upOverride = null, downOverride = null) => {
     upOverride !== null ? upOverride() : this.up();
 
-    this.console.group("Testing " + name);
+    console.group("Testing " + name);
 
     var returnValue = false;
     try {
       returnValue = func();
     } catch (e) {
-      this.console.error("Error in running function.");
-      this.console.debug(e);
+      console.error("Error in running function.");
+      console.debug(e);
     } finally {
-
+			throw "Error in running function: " + e;
     }
-    returnValue ? this.console.success("PASS") : this.console.error("FAIL");
-    this.console.groupEnd();
+    returnValue ? console.log("PASS") : console.error("FAIL");
+    console.groupEnd();
     downOverride !== null ? downOverride() : this.down();
     this.testResults.push(returnValue);
     this.testResultsByName[name] = returnValue;
-    return returnValue;
+    if(!returnValue) throw "FAIL";
   }
 
   testGroupFlushAll = () => {
-    this.console.group("FLUSHALL");
+    console.group("FLUSHALL");
     this.JSTest("FLUSHALL", ()=>{
       this.jedis.set("KEY-1", 1);
       this.jedis.set("KEY-2", 2);
@@ -109,11 +46,11 @@ class JedisTest{
       var key2Nil = this.jedis.get("KEY-2") === null;
       return key1Nil && key2Nil;
     }, ()=>{}, ()=>{});
-    this.console.groupEnd();
+    console.groupEnd();
   }
 
   testGroupLocalStorage = () => {
-    this.console.group("LOCALSTORAGE");
+    console.group("LOCALSTORAGE");
     this.JSTest("_SAVELSKEY", ()=>{
       this.jedis.set("TO_SAVE_IN_LOCALSTORAGE", "CAT");
       var fromLS = window.localStorage.getItem("jedisTest.keys");
@@ -137,11 +74,11 @@ class JedisTest{
 
       return JSON.stringify(testObject) === JSON.stringify(fromJedis);
     });
-    this.console.groupEnd();
+    console.groupEnd();
   }
 
   testGroupKeys = () => {
-    this.console.group("KEYS");
+    console.group("KEYS");
 
     this.JSTest("GET", () => {
       let getUnexistingKeyReturnsNull = this.jedis.get("UNEXISTING_KEY") === null;
@@ -162,11 +99,11 @@ class JedisTest{
       return this.jedis.get("EXISTING_VALUE") === null
     });
 
-    this.console.groupEnd();
+    console.groupEnd();
   }
 
   testGroupLists = () => {
-    this.console.group("LISTS");
+    console.group("LISTS");
 
     this.JSTest("LPUSH", () => {
       this.jedis.lpush("LIST", "simpleStringFromTheLeft");
@@ -188,47 +125,12 @@ class JedisTest{
       throw "Not yet implemented";
     })
 
-    this.console.groupEnd();
+    console.groupEnd();
   }
 
   testGroupSets = () => {
-    this.console.group("SETS");
+    console.group("SETS");
 
-    this.console.groupEnd();
+    console.groupEnd();
   }
-
-  go = () => {
-
-    this.testGroupFlushAll();
-
-    this.testGroupKeys();
-
-    this.testGroupLists();
-
-    this.testGroupSets();
-
-    this.testGroupLocalStorage();
-
-    this.afterMath();
-  }
-
-  afterMath = () => {
-    var totalPasses = 0;
-    var totalFails = 0;
-
-    for(var r of this.testResults){
-      r ? totalPasses++ : totalFails++;
-    }
-
-    this.console.header(`Tests: ${totalPasses + totalFails}. Passed: ${totalPasses}, Failed: ${totalFails}.`);
-    console.log("TRBN", this.testResultsByName);
-    for(var r in this.testResultsByName){
-      console.log(r);
-      var val = this.testResultsByName[r];
-      if(val){
-        this.console.footer(r);
-      }
-    }
-  }
-
 };
