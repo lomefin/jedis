@@ -1,6 +1,7 @@
-jedis
+Jedis
 =======
 A Redis-like library for javascript browser clients with persistence.
+[![Build Status](https://travis-ci.org/lomefin/jedis.svg?branch=master)](https://travis-ci.org/lomefin/jedis)
 
 What it is
 ---------------
