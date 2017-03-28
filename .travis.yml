@@ -1,6 +1,6 @@
 language: javascript
 script:
- - nvm use 
+ - nvm install 
  - npm install
  - npm run-script build
  - phantomjs testrunner.js LOCALSTORAGE
