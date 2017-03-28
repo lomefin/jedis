@@ -1,0 +1,7 @@
+language: javascript
+script:
+ - phantomjs testrunner.js FLUSHALL
+ - phantomjs testrunner.js KEYS
+ - phantomjs testrunner.js LISTS
+ - phantomjs testrunner.js SETS
+ - phantomjs testrunner.js LOCALSTORAGE
