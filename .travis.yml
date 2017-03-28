@@ -1,5 +1,6 @@
 language: javascript
 script:
+ - npm install
  - npm run-script build
  - phantomjs testrunner.js LOCALSTORAGE
  - phantomjs testrunner.js FLUSHALL
