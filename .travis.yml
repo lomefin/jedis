@@ -1,6 +1,6 @@
 language: javascript
 script:
- - phantomjs testrunnes.js LOCALSTORAGE
+ - phantomjs testrunner.js LOCALSTORAGE
  - phantomjs testrunner.js FLUSHALL
  - phantomjs testrunner.js KEYS
  - phantomjs testrunner.js LISTS
