@@ -107,12 +107,12 @@ class JedisTest{
 
     // this.JSTest("LPUSH", () => {
     //   throw "Not yet implemented";
-    //   //this.jedis.lpush("LIST", "simpleStringFromTheLeft");
+    //   this.jedis.lpush("LIST", "simpleStringFromTheLeft");
     // });
 
     // this.JSTest("RPUSH", () => {
     //   throw "Not yet implemented";
-    //   //this.jedis.rpush("LIST", "simpleStringFromTheRight");
+    //   this.jedis.rpush("LIST", "simpleStringFromTheRight");
     // });
 
     // this.JSTest("LPOP", ()=>{
