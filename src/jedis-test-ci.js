@@ -105,27 +105,27 @@ class JedisTest{
   testGroupLists = () => {
     console.group("LISTS");
 
-    this.JSTest("LPUSH", () => {
-      throw "Not yet implemented";
-      //this.jedis.lpush("LIST", "simpleStringFromTheLeft");
-    });
+    // this.JSTest("LPUSH", () => {
+    //   throw "Not yet implemented";
+    //   //this.jedis.lpush("LIST", "simpleStringFromTheLeft");
+    // });
 
-    this.JSTest("RPUSH", () => {
-      throw "Not yet implemented";
-      //this.jedis.rpush("LIST", "simpleStringFromTheRight");
-    });
+    // this.JSTest("RPUSH", () => {
+    //   throw "Not yet implemented";
+    //   //this.jedis.rpush("LIST", "simpleStringFromTheRight");
+    // });
 
-    this.JSTest("LPOP", ()=>{
-      throw "Not yet implemented";
-    });
+    // this.JSTest("LPOP", ()=>{
+    //   throw "Not yet implemented";
+    // });
 
-    this.JSTest("RPOP", ()=>{
-      throw "Not yet implemented";
-    });
+    // this.JSTest("RPOP", ()=>{
+    //   throw "Not yet implemented";
+    // });
 
-    this.JSTest("RPOPLPUSH", ()=>{
-      throw "Not yet implemented";
-    })
+    // this.JSTest("RPOPLPUSH", ()=>{
+    //   throw "Not yet implemented";
+    // })
 
     console.groupEnd();
   }
