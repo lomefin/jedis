@@ -106,11 +106,13 @@ class JedisTest{
     console.group("LISTS");
 
     this.JSTest("LPUSH", () => {
-      this.jedis.lpush("LIST", "simpleStringFromTheLeft");
+      throw "Not yet implemented";
+      //this.jedis.lpush("LIST", "simpleStringFromTheLeft");
     });
 
     this.JSTest("RPUSH", () => {
-      this.jedis.rpush("LIST", "simpleStringFromTheRight");
+      throw "Not yet implemented";
+      //this.jedis.rpush("LIST", "simpleStringFromTheRight");
     });
 
     this.JSTest("LPOP", ()=>{
