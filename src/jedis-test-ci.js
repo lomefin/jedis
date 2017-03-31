@@ -123,9 +123,9 @@ class JedisTest{
     //   throw "Not yet implemented";
     // });
 
-    // this.JSTest("RPOPLPUSH", ()=>{
-    //   throw "Not yet implemented";
-    // })
+    this.JSTest("RPOPLPUSH", ()=>{
+       throw "Not yet implemented";
+    })
 
     console.groupEnd();
   }
