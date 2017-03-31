@@ -105,28 +105,120 @@ class JedisTest{
   testGroupLists = () => {
     console.group("LISTS");
 
-    // this.JSTest("LPUSH", () => {
-    //   throw "Not yet implemented";
-    //   this.jedis.lpush("LIST", "simpleStringFromTheLeft");
-    // });
+		this.JSTest("LRANGE", () => {
+			console.log("TESTING LRANGE");
+			let key = "LIST1";
+			this.jedis.lpush(key,"value1","value2","value3");
+      
+			let range = this.jedis.lrange(key,  0,  0); 
+			if(range[0] !== "value3") return false;
+			
+			range = this.jedis.lrange(key,  1,  1); 
+			if(range[0] !== "value2") return false;
+			
+			range = this.jedis.lrange(key,  2,  2); 
+			if(range[0] !== "value1") return false;
+			
+			range = this.jedis.lrange(key, -1, -1); 
+			if(range[0] !== "value1") return false;
+			
+			range = this.jedis.lrange(key, -2, -2); 
+			if(range[0] !== "value2") return false;
+			
+			range = this.jedis.lrange(key, -3, -3); 
+			if(range[0] !== "value3") return false;
+			
+			range = this.jedis.lrange(key,  0, -1); 
+			if(range[0] !== "value3" || range[1] !== "value2" || range[2] !== "value1") return false;
+			
+			range = this.jedis.lrange(key,  0, -2); 
+			if(range[0] !== "value3" || range[1] !== "value2") return false;
+			
+			range = this.jedis.lrange(key,  0, -3); 
+			if(range[0] !== "value3") return false;
+			
+			range = this.jedis.lrange(key, 10, -3); 
+			if(range[0] !== undefined) return false;
+			
+			range = this.jedis.lrange(key, -6,  2); 
+			if(range[0] !== "value3" || range[1] !== "value2" || range[2] !== "value1") return false;
+			
+			range = this.jedis.lrange(key, -1,  2); 
+			if(range[0] !== "value1") return false;
+			
+			range = this.jedis.lrange("NON_EXISTENT_LIST",  0,  1); 
+			if(range[0] !== undefined) return false;
+			
+			return true;
+    });
+		
+		this.JSTest("LLEN", () => {
+			console.log("TESTING LLEN");
+      const key = "LIST2";
+			 
+			if (this.jedis.llen(key) !== 0) return false;
+			 
+			this.jedis.lpush(key, "value1");
+			if (this.jedis.llen(key) !== 1) return false;
 
-    // this.JSTest("RPUSH", () => {
-    //   throw "Not yet implemented";
-    //   this.jedis.rpush("LIST", "simpleStringFromTheRight");
-    // });
+			this.jedis.lpush(key, "value2", "value3");
+			if (this.jedis.llen(key) !== 3) return false;
 
-    // this.JSTest("LPOP", ()=>{
-    //   throw "Not yet implemented";
-    // });
+			return true;
+    });
 
-    // this.JSTest("RPOP", ()=>{
-    //   throw "Not yet implemented";
-    // });
+    this.JSTest("LPUSH", () => {
+			console.log("TESTING LPUSH");
+			const key = "LIST3";
+			
+			if (this.jedis.llen(key) !== 0) return false;
+			if (this.jedis.lrange(key, 0, 0)[0] !== undefined) return false;
+			
+			this.jedis.lpush(key, "value1");
+			
+			if (this.jedis.llen(key) !== 1) return false;
+			if (this.jedis.lrange(key, 0, 0)[0] !== "value1") return false;
+			
+			this.jedis.lpush(key, "value2", "value3");
+			
+			if (this.jedis.llen(key) !== 3) return false;
+			if(this.jedis.lrange(key, 0, -1)[0] !== "value3" || this.jedis.lrange(key, 0, -1)[1] !== "value2" || this.jedis.lrange(key, 0, -1)[2] !== "value1") return false;
+			
+			return true;
+    });
+
+    this.JSTest("LPUSH", () => {
+			console.log("TESTING RPUSH");
+			const key = "LIST4";
+			
+			if (this.jedis.llen(key) !== 0) return false;
+			if (this.jedis.lrange(key, 0, 0)[0] !== undefined) return false;
+			
+			this.jedis.rpush(key, "value1");
+			
+			if (this.jedis.llen(key) !== 1) return false;
+			if (this.jedis.lrange(key, 0, 0)[0] !== "value1") return false;
+			
+			this.jedis.rpush(key, "value2", "value3");
+			
+			if (this.jedis.llen(key) !== 3) return false;
+			if(this.jedis.lrange(key, 0, -1)[0] !== "value1" || this.jedis.lrange(key, 0, -1)[1] !== "value2" || this.jedis.lrange(key, 0, -1)[2] !== "value3") return false;
+			
+			return true;
+    });
+/*
+    this.JSTest("LPOP", ()=>{
+       throw "Not yet implemented";
+    });
+
+    this.JSTest("RPOP", ()=>{
+       throw "Not yet implemented";
+    });
 
     this.JSTest("RPOPLPUSH", ()=>{
        throw "Not yet implemented";
     })
-
+*/
     console.groupEnd();
   }
 
