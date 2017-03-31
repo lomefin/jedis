@@ -17,7 +17,7 @@ class JedisTest{
   JSTest = (name, func, upOverride = null, downOverride = null) => {
     upOverride !== null ? upOverride() : this.up();
 
-    console.group("Testing " + name);
+    console.log("Testing " + name);
 
     var returnValue = false;
     try {
@@ -29,7 +29,6 @@ class JedisTest{
     } finally {}
 		
     returnValue ? console.log("PASS") : console.error("FAIL");
-    console.groupEnd();
     downOverride !== null ? downOverride() : this.down();
     this.testResults.push(returnValue);
     this.testResultsByName[name] = returnValue;
@@ -37,7 +36,7 @@ class JedisTest{
   }
 
   testGroupFlushAll = () => {
-    console.group("FLUSHALL");
+    console.log("FLUSHALL");
     this.JSTest("FLUSHALL", ()=>{
       this.jedis.set("KEY-1", 1);
       this.jedis.set("KEY-2", 2);
@@ -46,11 +45,10 @@ class JedisTest{
       var key2Nil = this.jedis.get("KEY-2") === null;
       return key1Nil && key2Nil;
     }, ()=>{}, ()=>{});
-    console.groupEnd();
   }
 
   testGroupLocalStorage = () => {
-    console.group("LOCALSTORAGE");
+    console.log("LOCALSTORAGE");
     this.JSTest("_SAVELSKEY", ()=>{
       this.jedis.set("TO_SAVE_IN_LOCALSTORAGE", "CAT");
       var fromLS = window.localStorage.getItem("jedisTest.keys");
@@ -74,11 +72,10 @@ class JedisTest{
 
       return JSON.stringify(testObject) === JSON.stringify(fromJedis);
     });
-    console.groupEnd();
   }
 
   testGroupKeys = () => {
-    console.group("KEYS");
+    console.log("KEYS");
 
     this.JSTest("GET", () => {
       let getUnexistingKeyReturnsNull = this.jedis.get("UNEXISTING_KEY") === null;
@@ -98,15 +95,12 @@ class JedisTest{
       this.jedis.del("EXISTING_VALUE");
       return this.jedis.get("EXISTING_VALUE") === null
     });
-
-    console.groupEnd();
   }
 
   testGroupLists = () => {
-    console.group("LISTS");
+    console.log("LISTS");
 
 		this.JSTest("LRANGE", () => {
-			console.log("TESTING LRANGE");
 			let key = "LIST1";
 			this.jedis.lpush(key,"value1","value2","value3");
       
@@ -153,7 +147,6 @@ class JedisTest{
     });
 		
 		this.JSTest("LLEN", () => {
-			console.log("TESTING LLEN");
       const key = "LIST2";
 			 
 			if (this.jedis.llen(key) !== 0) return false;
@@ -168,7 +161,6 @@ class JedisTest{
     });
 
     this.JSTest("LPUSH", () => {
-			console.log("TESTING LPUSH");
 			const key = "LIST3";
 			
 			if (this.jedis.llen(key) !== 0) return false;
@@ -187,8 +179,7 @@ class JedisTest{
 			return true;
     });
 
-    this.JSTest("LPUSH", () => {
-			console.log("TESTING RPUSH");
+    this.JSTest("RPUSH", () => {
 			const key = "LIST4";
 			
 			if (this.jedis.llen(key) !== 0) return false;
@@ -219,12 +210,9 @@ class JedisTest{
        throw "Not yet implemented";
     })
 */
-    console.groupEnd();
   }
 
   testGroupSets = () => {
-    console.group("SETS");
-
-    console.groupEnd();
+    console.log("SETS");
   }
 };
