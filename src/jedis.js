@@ -127,6 +127,51 @@ class Jedis {
 		return this.llen(key);
 	}
 	
+	lpop(key){
+		this._checkTypeList(key);
+		
+		if (!this.lists[key]){
+			return null;
+		}
+		
+		let popped = this.lists[key].value.shift();
+		this._saveLSKey('lists');
+		return popped;
+	}
+	
+	rpop(key){
+		this._checkTypeList(key);
+		
+		if (!this.lists[key]){
+			return null;
+		}
+		
+		let popped = this.lists[key].value.pop();
+		this._saveLSKey('lists');
+		return popped;
+	}
+	
+	rpoplpush(source, destination){
+		this._checkTypeList(source);
+		
+		if (!this.lists[source]){
+			return null;
+		}
+		
+		this._checkTypeList(destination);
+		
+		if (!this.lists[destination]){
+			this.lists[destination] = { value : []};
+		}
+		
+		let popped = this.rpop(source);
+		
+		this.lpush(destination, popped);
+		
+		this._saveLSKey('lists');
+		return popped;
+	}
+	
 	_checkTypeList(key){
 		if(this.keys[key] || this.sets[key]) throw new Error('(error) WRONGTYPE Operation against a key holding the wrong kind of value');
 	}

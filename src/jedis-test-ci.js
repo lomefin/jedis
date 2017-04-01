@@ -197,19 +197,68 @@ class JedisTest{
 			
 			return true;
     });
-/*
+
     this.JSTest("LPOP", ()=>{
-       throw "Not yet implemented";
+      const key = "LIST5";
+			 
+			this.jedis.rpush(key, "one", "two", "three");
+			
+			let popped = this.jedis.lpop(key);
+			
+			if(popped !== "one") return false;
+			
+			popped = this.jedis.lpop("NON_EXISTENT_LIST");
+			 
+			if(popped !== null) return false;
+			
+			return true;
     });
 
     this.JSTest("RPOP", ()=>{
-       throw "Not yet implemented";
+      const key = "LIST6";
+			
+			this.jedis.rpush(key, "one", "two", "three");
+			
+			let popped = this.jedis.rpop(key);
+			
+			if(popped !== "three") return false;
+			
+			popped = this.jedis.rpop("NON_EXISTENT_LIST");
+			
+			if(popped !== null) return false;
+			
+			return true;
     });
-
+		
     this.JSTest("RPOPLPUSH", ()=>{
-       throw "Not yet implemented";
+      const source = "LIST7";
+			const destination = "LIST8";
+			
+			//Prueba con dos listas distintas, una de ellas vacia.
+			this.jedis.rpush(source, "one", "two", "three");
+			let popped = this.jedis.rpoplpush(source, destination);
+			
+			let sRange = this.jedis.lrange(source,0,-1);
+			let dRange = this.jedis.lrange(destination, 0, -1);
+			
+			if (popped !== "three" || sRange[0] !== "one" || sRange[1] !== "two" || sRange[2] !== undefined || dRange[0] !== "three" ||  dRange[1] !== undefined){
+				return false;
+			}
+			
+			//Prueba con lista de origen no existente.
+			if(this.jedis.rpoplpush("NON_EXISTENT_LIST",destination) !== null) return false;
+			
+			//Prueba con lista de origen y destino siendo el mismo objeto (lista circular);
+			popped = this.jedis.rpoplpush(source,source);
+			
+			sRange = this.jedis.lrange(source,0,-1);
+			
+			if (popped !== "two" || sRange[0] !== "two" || sRange[1] !== "one"){
+				return false;
+			}
+			
+			return true;
     })
-*/
   }
 
   testGroupSets = () => {
