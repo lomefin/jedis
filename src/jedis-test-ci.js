@@ -17,7 +17,7 @@ class JedisTest{
   JSTest = (name, func, upOverride = null, downOverride = null) => {
     upOverride !== null ? upOverride() : this.up();
 
-    console.group("Testing " + name);
+    console.log("Testing " + name);
 
     var returnValue = false;
     try {
@@ -29,7 +29,6 @@ class JedisTest{
     } finally {}
 		
     returnValue ? console.log("PASS") : console.error("FAIL");
-    console.groupEnd();
     downOverride !== null ? downOverride() : this.down();
     this.testResults.push(returnValue);
     this.testResultsByName[name] = returnValue;
@@ -37,7 +36,7 @@ class JedisTest{
   }
 
   testGroupFlushAll = () => {
-    console.group("FLUSHALL");
+    console.log("FLUSHALL");
     this.JSTest("FLUSHALL", ()=>{
       this.jedis.set("KEY-1", 1);
       this.jedis.set("KEY-2", 2);
@@ -46,11 +45,10 @@ class JedisTest{
       var key2Nil = this.jedis.get("KEY-2") === null;
       return key1Nil && key2Nil;
     }, ()=>{}, ()=>{});
-    console.groupEnd();
   }
 
   testGroupLocalStorage = () => {
-    console.group("LOCALSTORAGE");
+    console.log("LOCALSTORAGE");
     this.JSTest("_SAVELSKEY", ()=>{
       this.jedis.set("TO_SAVE_IN_LOCALSTORAGE", "CAT");
       var fromLS = window.localStorage.getItem("jedisTest.keys");
@@ -74,11 +72,10 @@ class JedisTest{
 
       return JSON.stringify(testObject) === JSON.stringify(fromJedis);
     });
-    console.groupEnd();
   }
 
   testGroupKeys = () => {
-    console.group("KEYS");
+    console.log("KEYS");
 
     this.JSTest("GET", () => {
       let getUnexistingKeyReturnsNull = this.jedis.get("UNEXISTING_KEY") === null;
@@ -98,41 +95,173 @@ class JedisTest{
       this.jedis.del("EXISTING_VALUE");
       return this.jedis.get("EXISTING_VALUE") === null
     });
-
-    console.groupEnd();
   }
 
   testGroupLists = () => {
-    console.group("LISTS");
+    console.log("LISTS");
 
-    // this.JSTest("LPUSH", () => {
-    //   throw "Not yet implemented";
-    //   this.jedis.lpush("LIST", "simpleStringFromTheLeft");
-    // });
+		this.JSTest("LRANGE", () => {
+			let key = "LIST1";
+			this.jedis.lpush(key,"value1","value2","value3");
+      
+			let range = this.jedis.lrange(key,  0,  0); 
+			if(range[0] !== "value3") return false;
+			
+			range = this.jedis.lrange(key,  1,  1); 
+			if(range[0] !== "value2") return false;
+			
+			range = this.jedis.lrange(key,  2,  2); 
+			if(range[0] !== "value1") return false;
+			
+			range = this.jedis.lrange(key, -1, -1); 
+			if(range[0] !== "value1") return false;
+			
+			range = this.jedis.lrange(key, -2, -2); 
+			if(range[0] !== "value2") return false;
+			
+			range = this.jedis.lrange(key, -3, -3); 
+			if(range[0] !== "value3") return false;
+			
+			range = this.jedis.lrange(key,  0, -1); 
+			if(range[0] !== "value3" || range[1] !== "value2" || range[2] !== "value1") return false;
+			
+			range = this.jedis.lrange(key,  0, -2); 
+			if(range[0] !== "value3" || range[1] !== "value2") return false;
+			
+			range = this.jedis.lrange(key,  0, -3); 
+			if(range[0] !== "value3") return false;
+			
+			range = this.jedis.lrange(key, 10, -3); 
+			if(range[0] !== undefined) return false;
+			
+			range = this.jedis.lrange(key, -6,  2); 
+			if(range[0] !== "value3" || range[1] !== "value2" || range[2] !== "value1") return false;
+			
+			range = this.jedis.lrange(key, -1,  2); 
+			if(range[0] !== "value1") return false;
+			
+			range = this.jedis.lrange("NON_EXISTENT_LIST",  0,  1); 
+			if(range[0] !== undefined) return false;
+			
+			return true;
+    });
+		
+		this.JSTest("LLEN", () => {
+      const key = "LIST2";
+			 
+			if (this.jedis.llen(key) !== 0) return false;
+			 
+			this.jedis.lpush(key, "value1");
+			if (this.jedis.llen(key) !== 1) return false;
 
-    // this.JSTest("RPUSH", () => {
-    //   throw "Not yet implemented";
-    //   this.jedis.rpush("LIST", "simpleStringFromTheRight");
-    // });
+			this.jedis.lpush(key, "value2", "value3");
+			if (this.jedis.llen(key) !== 3) return false;
 
-    // this.JSTest("LPOP", ()=>{
-    //   throw "Not yet implemented";
-    // });
+			return true;
+    });
 
-    // this.JSTest("RPOP", ()=>{
-    //   throw "Not yet implemented";
-    // });
+    this.JSTest("LPUSH", () => {
+			const key = "LIST3";
+			
+			if (this.jedis.llen(key) !== 0) return false;
+			if (this.jedis.lrange(key, 0, 0)[0] !== undefined) return false;
+			
+			this.jedis.lpush(key, "value1");
+			
+			if (this.jedis.llen(key) !== 1) return false;
+			if (this.jedis.lrange(key, 0, 0)[0] !== "value1") return false;
+			
+			this.jedis.lpush(key, "value2", "value3");
+			
+			if (this.jedis.llen(key) !== 3) return false;
+			if(this.jedis.lrange(key, 0, -1)[0] !== "value3" || this.jedis.lrange(key, 0, -1)[1] !== "value2" || this.jedis.lrange(key, 0, -1)[2] !== "value1") return false;
+			
+			return true;
+    });
 
-    // this.JSTest("RPOPLPUSH", ()=>{
-    //   throw "Not yet implemented";
-    // })
+    this.JSTest("RPUSH", () => {
+			const key = "LIST4";
+			
+			if (this.jedis.llen(key) !== 0) return false;
+			if (this.jedis.lrange(key, 0, 0)[0] !== undefined) return false;
+			
+			this.jedis.rpush(key, "value1");
+			
+			if (this.jedis.llen(key) !== 1) return false;
+			if (this.jedis.lrange(key, 0, 0)[0] !== "value1") return false;
+			
+			this.jedis.rpush(key, "value2", "value3");
+			
+			if (this.jedis.llen(key) !== 3) return false;
+			if(this.jedis.lrange(key, 0, -1)[0] !== "value1" || this.jedis.lrange(key, 0, -1)[1] !== "value2" || this.jedis.lrange(key, 0, -1)[2] !== "value3") return false;
+			
+			return true;
+    });
 
-    console.groupEnd();
+    this.JSTest("LPOP", ()=>{
+      const key = "LIST5";
+			 
+			this.jedis.rpush(key, "one", "two", "three");
+			
+			let popped = this.jedis.lpop(key);
+			
+			if(popped !== "one") return false;
+			
+			popped = this.jedis.lpop("NON_EXISTENT_LIST");
+			 
+			if(popped !== null) return false;
+			
+			return true;
+    });
+
+    this.JSTest("RPOP", ()=>{
+      const key = "LIST6";
+			
+			this.jedis.rpush(key, "one", "two", "three");
+			
+			let popped = this.jedis.rpop(key);
+			
+			if(popped !== "three") return false;
+			
+			popped = this.jedis.rpop("NON_EXISTENT_LIST");
+			
+			if(popped !== null) return false;
+			
+			return true;
+    });
+		
+    this.JSTest("RPOPLPUSH", ()=>{
+      const source = "LIST7";
+			const destination = "LIST8";
+			
+			//Prueba con dos listas distintas, una de ellas vacia.
+			this.jedis.rpush(source, "one", "two", "three");
+			let popped = this.jedis.rpoplpush(source, destination);
+			
+			let sRange = this.jedis.lrange(source,0,-1);
+			let dRange = this.jedis.lrange(destination, 0, -1);
+			
+			if (popped !== "three" || sRange[0] !== "one" || sRange[1] !== "two" || sRange[2] !== undefined || dRange[0] !== "three" ||  dRange[1] !== undefined){
+				return false;
+			}
+			
+			//Prueba con lista de origen no existente.
+			if(this.jedis.rpoplpush("NON_EXISTENT_LIST",destination) !== null) return false;
+			
+			//Prueba con lista de origen y destino siendo el mismo objeto (lista circular);
+			popped = this.jedis.rpoplpush(source,source);
+			
+			sRange = this.jedis.lrange(source,0,-1);
+			
+			if (popped !== "two" || sRange[0] !== "two" || sRange[1] !== "one"){
+				return false;
+			}
+			
+			return true;
+    })
   }
 
   testGroupSets = () => {
-    console.group("SETS");
-
-    console.groupEnd();
+    console.log("SETS");
   }
 };
